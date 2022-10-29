@@ -33,6 +33,7 @@ namespace SkipList
         {
             //if the height of the node matches, then bind it to other nodes that have the same height
             //use icomparable to create connections of the nodes that are of the same height, from left to right based on what value is larger
+            //make Unit tests for skiplist, add icomparable to node and skiplist classes
             if (Head.Height < height)
             {
                 if (Head.Right == null)
