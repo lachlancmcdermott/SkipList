@@ -8,16 +8,17 @@ using System.Xml;
 
 namespace SkipList
 {
-    public class SkipList<T>
+    public class SkipList<T> where T : IComparable<T>
     {
         public Node<T> Head = new Node<T>(default, 1, null, null);
         public int Count { get; private set; }
 
-        public void InsertNode(T value)
+        public void Insert(T value)
         {
             int height = 0;
             Random rand = new Random();
             Node<T> node = null;
+            Node<T> newHead = null;
 
             do
             {
@@ -26,31 +27,44 @@ namespace SkipList
             }
             while (rand.Next(2) != 0);
 
-            ConnectNode(node, value, height);
-        }
-
-        public void ConnectNode(Node<T> node, T value, int height)
-        {
-            //if the height of the node matches, then bind it to other nodes that have the same height
-            //use icomparable to create connections of the nodes that are of the same height, from left to right based on what value is larger
-            //make Unit tests for skiplist, add icomparable to node and skiplist classes
             if (Head.Height < height)
             {
-                if (Head.Right == null)
+                height = Head.Height + 1;
+                Head = new Node<T>(default, height, default, Head);
+            }
+
+            for (int i = 0; i < Head.Height; i++)
+            {
+                if (node.Height == Head.Height) //figure out what node is largest/smallest and where to insert in the list
                 {
-                    Node<T> tNode = new Node<T>(value, Head.Height + 1, null, null);
-                    Head.Right = tNode;
-                    return;
+                    Head.Right = node;
                 }
-                Node<T> node = new Node<T>(value, Head.Height + 1, null, null);
-                Node<T> newHead = new Node<T>(default, Head.Height + 1, node, Head);
+                else
+                {
+                    int tempHeight = Head.Height;
+                    Node<T> temp = Head;
+                    for (int k = 0; k < Head.Height; k++)
+                    {
+                        if(temp.Down.Right.Value == null)
+                        {
+                            temp.Down.Right = node;
+                            break;
+                        }
+                        int comp = node.Value.CompareTo(temp.Down.Right.Value);
+                        if (comp < 1)
+                        {
+                            if(comp == 0)
+                            {
+                                node.Count++;
+                            }
+                            node.Right = temp.Down.Right;
+                            temp.Down.Right = node;
+
+                            temp = temp.Down;
+                        }
+                    }
+                }
             }
         }
-        
-        public void AddNConnect(int newHeight, T val)
-        {
-
-        }
-
     }
 }
