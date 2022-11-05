@@ -8,7 +8,9 @@ namespace SkipList
         {
             SkipList<int> skipList = new SkipList<int>();
 
-            skipList.Insert(1);
+            skipList.Add(1);
+            skipList.Add(3);
+            skipList.Add(2);
         }
     }
 }

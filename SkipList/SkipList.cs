@@ -13,7 +13,7 @@ namespace SkipList
         public Node<T> Head = new Node<T>(default, 1, null, null);
         public int Count { get; private set; }
 
-        public void Insert(T value)
+        public void Add(T value)
         {
             int height = 0;
             Random rand = new Random();
@@ -32,39 +32,50 @@ namespace SkipList
                 height = Head.Height + 1;
                 Head = new Node<T>(default, height, default, Head);
             }
+            //nested if statements inside loop
+            //go right as far as possible, add node stopped on to queue
+            //go down, then go right again, when u stop add to queue
+            //continue until u run out of nodes to go down
 
+
+            Node<T> temp = Head;
             for (int i = 0; i < Head.Height; i++)
             {
-                if (node.Height == Head.Height) //figure out what node is largest/smallest and where to insert in the list
+                int tempHeight = Head.Height;
+                for (int k = 0; k < Head.Height; k++)
                 {
-                    Head.Right = node;
-                }
-                else
-                {
-                    int tempHeight = Head.Height;
-                    Node<T> temp = Head;
-                    for (int k = 0; k < Head.Height; k++)
+                    if (temp.Down != null && temp.Down.Right == null)
                     {
-                        if(temp.Down.Right.Value == null)
-                        {
-                            temp.Down.Right = node;
-                            break;
-                        }
-                        int comp = node.Value.CompareTo(temp.Down.Right.Value);
-                        if (comp < 1)
-                        {
-                            if(comp == 0)
-                            {
-                                node.Count++;
-                            }
-                            node.Right = temp.Down.Right;
-                            temp.Down.Right = node;
-
-                            temp = temp.Down;
-                        }
+                        temp.Down.Right = node;
+                        break;
                     }
+                    int comp = node.Value.CompareTo(temp.Down.Right.Value);
+
+
+                    while (comp < 1)
+                    {
+                        if (comp == 0)
+                        {
+                            node.Count++;
+                        }
+                        node.Right = temp.Down.Right;
+                        temp.Down.Right = node;
+
+                        temp = temp.Right;
+                    }
+                    temp = temp.Down;
                 }
             }
+        }
+
+        public void Subtract(T value)
+        {
+
+        }
+
+        public Node<T> Search(T value)
+        {
+            return null;
         }
     }
 }
