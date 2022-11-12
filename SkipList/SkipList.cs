@@ -91,9 +91,9 @@ namespace SkipList
 
         }
 
-        public bool Contains(T Value)
+        public Node<T> Search(T Value)
         {
-            return false;
+            return Node;
         }
     }
 }
