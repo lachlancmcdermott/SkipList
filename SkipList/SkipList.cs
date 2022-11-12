@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SkipList
 {
@@ -12,11 +13,18 @@ namespace SkipList
     {
         public Node<T> Head = new Node<T>(default, 1, null, null);
         public int Count { get; private set; }
+        Random rand;
+
+        public SkipList(Random rand)
+        {
+            this.rand = rand;
+        }
+        public SkipList()
+            : this(new Random()) { }
 
         public void Add(T value)
         {
             int height = 0;
-            Random rand = new Random();
             Node<T> node = null;
             Node<T> newHead = null;
 
@@ -32,50 +40,50 @@ namespace SkipList
                 height = Head.Height + 1;
                 Head = new Node<T>(default, height, default, Head);
             }
-            //nested if statements inside loop
-            //go right as far as possible, add node stopped on to queue
-            //go down, then go right again, when u stop add to queue
-            //continue until u run out of nodes to go down
 
+            Queue<Node<T>> queue = new Queue<Node<T>>();
+            Node<T> curr = Head; 
 
-            Node<T> temp = Head;
-            for (int i = 0; i < Head.Height; i++)
+            
+            while(true)
             {
-                int tempHeight = Head.Height;
-                for (int k = 0; k < Head.Height; k++)
+                while (curr.Right != null && curr.Right.Value.CompareTo(value) < 0)
                 {
-                    if (temp.Down != null && temp.Down.Right == null)
+                    curr = curr.Right;
+                }
+                if (curr.Height <= node.Height)
+                {
+                    queue.Enqueue(curr);
+                }
+                if (curr.Down != null)
+                {
+                    curr = curr.Down;
+                    if (curr.Right != null && curr.Right.Value.CompareTo(value) == 0)
                     {
-                        temp.Down.Right = node;
-                        break;
-                    }
-                    int comp = node.Value.CompareTo(temp.Down.Right.Value);
-
-
-                    while (comp < 1)
-                    {
-                        if (comp == 0)
+                        curr.Right.Count++;
+                        Node<T> t = curr.Down;
+                        while(t != null)
                         {
-                            node.Count++;
+                            t.Count++;
+                            t = t.Down;
                         }
-                        node.Right = temp.Down.Right;
-                        temp.Down.Right = node;
-
-                        temp = temp.Right;
+                        return;
                     }
-                    temp = temp.Down;
+                }
+                else
+                {
+                    break;
                 }
             }
-        }
 
-        public void Subtract(T value)
-        {
+            while (queue.Count > 0)
+            {
+                Node<T> temp = queue.Dequeue();
+                node.Right = temp.Right;
+                temp.Right = node;
+            }
 
-        }
-
-        public Node<T> Search(T value)
-        {
-            return null;
+            //attach members from queue to new node, starting with bottom
         }
     }
 }

@@ -6,11 +6,13 @@ namespace SkipList
     {
         static void Main(string[] args)
         {
-            SkipList<int> skipList = new SkipList<int>();
+            SkipList<string> skipList = new SkipList<string>(new Random(1));
 
-            skipList.Add(1);
-            skipList.Add(3);
-            skipList.Add(2);
+            skipList.Add("shoulders");
+            skipList.Add("Knees");
+            skipList.Add("&");
+            skipList.Add("toes");
+            skipList.Add("Knees");
         }
     }
 }

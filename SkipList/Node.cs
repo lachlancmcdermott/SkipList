@@ -12,7 +12,7 @@ namespace SkipList
         public int Height;
         public Node<T> Right;
         public Node<T> Down;
-        public int Count = 0;
+        public int Count = 1;
 
 
         public Node(T value, int height, Node<T> right, Node<T> down)
