@@ -32,20 +32,21 @@ namespace SkipList
             {
                 height++;
                 node = new Node<T>(value, height, null, node);
+                if (Head.Height < height)
+                {
+                    Head = new Node<T>(default, height, default, Head);
+                    break;
+                }
             }
             while (rand.Next(2) != 0);
 
-            if (Head.Height < height)
-            {
-                height = Head.Height + 1;
-                Head = new Node<T>(default, height, default, Head);
-            }
+
 
             Queue<Node<T>> queue = new Queue<Node<T>>();
-            Node<T> curr = Head; 
+            Node<T> curr = Head;
 
-            
-            while(true)
+
+            while (true)
             {
                 while (curr.Right != null && curr.Right.Value.CompareTo(value) < 0)
                 {
@@ -55,20 +56,20 @@ namespace SkipList
                 {
                     queue.Enqueue(curr);
                 }
+                if (curr.Right != null && curr.Right.Value.CompareTo(value) == 0)
+                {
+                    curr.Right.Count++;
+                    Node<T> t = curr.Down;
+                    while (t != null)
+                    {
+                        t.Count++;
+                        t = t.Down;
+                    }
+                    return;
+                }
                 if (curr.Down != null)
                 {
                     curr = curr.Down;
-                    if (curr.Right != null && curr.Right.Value.CompareTo(value) == 0)
-                    {
-                        curr.Right.Count++;
-                        Node<T> t = curr.Down;
-                        while(t != null)
-                        {
-                            t.Count++;
-                            t = t.Down;
-                        }
-                        return;
-                    }
                 }
                 else
                 {
@@ -81,9 +82,18 @@ namespace SkipList
                 Node<T> temp = queue.Dequeue();
                 node.Right = temp.Right;
                 temp.Right = node;
+                node = node.Down;
             }
+        }
 
-            //attach members from queue to new node, starting with bottom
+        public void Remove(T value)
+        {
+
+        }
+
+        public bool Contains(T Value)
+        {
+            return false;
         }
     }
 }
