@@ -9,9 +9,9 @@ using System.Xml.Linq;
 
 namespace SkipList
 {
-    public class SkipList<T> where T : IComparable<T>
+    public class SkipList<Toe> where Toe : IComparable<Toe>
     {
-        public Node<T> Head = new Node<T>(default, 1, null, null);
+        public Node<Toe> Head = new Node<Toe>(default, 1, null, null);
         public int Count { get; private set; }
         Random rand;
 
@@ -22,29 +22,26 @@ namespace SkipList
         public SkipList()
             : this(new Random()) { }
 
-        public void Add(T value)
+        public void Add(Toe value)
         {
             int height = 0;
-            Node<T> node = null;
-            Node<T> newHead = null;
+            Node<Toe> node = null;
+            Node<Toe> newHead = null;
 
             do
             {
                 height++;
-                node = new Node<T>(value, height, null, node);
+                node = new Node<Toe>(value, height, null, node);
                 if (Head.Height < height)
                 {
-                    Head = new Node<T>(default, height, default, Head);
+                    Head = new Node<Toe>(default, height, default, Head);
                     break;
                 }
             }
             while (rand.Next(2) != 0);
 
-
-
-            Queue<Node<T>> queue = new Queue<Node<T>>();
-            Node<T> curr = Head;
-
+            Queue<Node<Toe>> queue = new Queue<Node<Toe>>();
+            Node<Toe> curr = Head;
 
             while (true)
             {
@@ -59,7 +56,7 @@ namespace SkipList
                 if (curr.Right != null && curr.Right.Value.CompareTo(value) == 0)
                 {
                     curr.Right.Count++;
-                    Node<T> t = curr.Down;
+                    Node<Toe> t = curr.Down;
                     while (t != null)
                     {
                         t.Count++;
@@ -79,21 +76,70 @@ namespace SkipList
 
             while (queue.Count > 0)
             {
-                Node<T> temp = queue.Dequeue();
+                Node<Toe> temp = queue.Dequeue();
                 node.Right = temp.Right;
                 temp.Right = node;
                 node = node.Down;
             }
         }
 
-        public void Remove(T value)
+        public bool Remove(Toe searchVal)
         {
+            Queue<Node<Toe>> queue = new Queue<Node<Toe>>();
+            Node<Toe> curr = Head;
 
+            while (curr != null)
+            {
+                while (curr.Right != null && curr.Right.Value.CompareTo(searchVal) < 0)
+                {
+                    curr = curr.Right;
+                }
+                if (curr.Right != null && curr.Right.Value.CompareTo(searchVal) == 0)
+                {
+                    queue.Enqueue(curr);
+
+                    if (curr.Right.Count > 1)
+                    {
+                        
+                        Node<Toe> t = curr;
+                        while (t != null)
+                        {
+                            t.Count++;
+                            t = t.Down;
+                        }
+                        return true;
+                    }
+                }
+                curr = curr.Down;
+            }
+
+            while (queue.Count > 0)
+            {
+                Node<Toe> temp = queue.Dequeue();
+                temp.Right = temp.Right.Right;
+            }
+            return queue.Count != 0;
         }
 
-        public Node<T> Search(T Value)
+        public Node<Toe> Search(Toe searchVal)
         {
-            return Node;
+            Queue<Node<Toe>> queue = new Queue<Node<Toe>>();
+            Node<Toe> curr = Head;
+
+            while (curr != null)
+            {
+                while (curr.Right != null && curr.Right.Value.CompareTo(searchVal) < 0)
+                {
+                    curr = curr.Right;
+                }
+                if (curr.Right != null && curr.Right.Value.CompareTo(searchVal) == 0)
+                {
+                    return curr.Right;
+                }
+                curr = curr.Down;
+            }
+
+            return null;
         }
     }
 }

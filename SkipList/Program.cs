@@ -8,11 +8,14 @@ namespace SkipList
         {
             SkipList<string> skipList = new SkipList<string>(new Random(1));
 
+
+            skipList.Add("head");
             skipList.Add("shoulders");
-            skipList.Add("Knees");
-            skipList.Add("&");
+            skipList.Add("knees");
             skipList.Add("toes");
-            skipList.Add("Knees");
+            bool areMyToesStillAttached = skipList.Remove("hair");
+            Node<String> search;
+            search = skipList.Search("shoulders");
         }
     }
 }
